@@ -1,0 +1,16 @@
+Native Android app that decodes Czech SPAYD (Short Payment Descriptor)
+payment QR codes. Works fully offline; no data leaves the device.
+
+Features:
+
+* Scan QR codes with the camera
+* Share images or text into the app via the system Share Sheet
+  (gallery, screenshots, browser)
+* Pick an image from storage
+* Open <tt>spayd:</tt> URIs
+* Parser derives the Czech account number from the IBAN
+* One-tap copy for every field
+* Material 3 with dynamic colors (Android 12+) and dark mode
+
+Built on CameraX and zxing-cpp for QR decoding — no proprietary Google
+dependencies.

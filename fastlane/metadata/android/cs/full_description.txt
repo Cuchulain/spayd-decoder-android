@@ -1,0 +1,17 @@
+Nativní Android aplikace pro dekódování českých platebních QR kódů ve
+formátu SPAYD (Short Payment Descriptor). Funguje plně offline, neodesílá
+žádná data na server.
+
+Funkce:
+
+* Skenování QR kódu kamerou
+* Sdílení obrázku nebo textu do aplikace přes systémový Share Sheet
+  (galerie, screenshot, prohlížeč)
+* Výběr obrázku z úložiště
+* Otevírání URI se schématem <tt>spayd:</tt>
+* Parser s odvozením českého čísla účtu z IBAN
+* Tlačítka pro zkopírování každého pole
+* Material 3 s dynamickými barvami (Android 12+) a tmavým režimem
+
+Postaveno na CameraX a zxing-cpp pro dekódování QR — žádné proprietární
+Google závislosti.

@@ -1,0 +1,1 @@
+Offline decoder for Czech SPAYD payment QR codes.

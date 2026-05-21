@@ -1,0 +1,2 @@
+* Doplněna F-Droid metadata (anglická a česká lokalizace)
+* Beze změn v kódu oproti 1.1.0
