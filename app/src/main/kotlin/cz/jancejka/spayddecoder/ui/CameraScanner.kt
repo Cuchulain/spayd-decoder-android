@@ -1,8 +1,6 @@
 package cz.jancejka.spayddecoder.ui
 
-import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -29,15 +27,9 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.google.mlkit.vision.barcode.BarcodeScanner
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
+import zxingcpp.BarcodeReader
 import java.util.concurrent.Executors
 
-@SuppressLint("UnsafeOptInUsageError")
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun CameraScanner(
     modifier: Modifier = Modifier,
@@ -47,11 +39,14 @@ fun CameraScanner(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
-    val scanner: BarcodeScanner = remember {
-        BarcodeScanning.getClient(
-            BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-                .build()
+    val reader = remember {
+        BarcodeReader(
+            BarcodeReader.Options(
+                formats = setOf(BarcodeReader.Format.QR_CODE),
+                tryHarder = true,
+                tryRotate = true,
+                tryDownscale = true,
+            )
         )
     }
     val previewView = remember {
@@ -63,7 +58,6 @@ fun CameraScanner(
     DisposableEffect(Unit) {
         onDispose {
             analysisExecutor.shutdown()
-            scanner.close()
         }
     }
 
@@ -81,22 +75,22 @@ fun CameraScanner(
                 .build()
                 .also { ia ->
                     ia.setAnalyzer(analysisExecutor) { proxy ->
-                        val media = proxy.image
-                        if (media == null || fired) {
+                        if (fired) {
                             proxy.close()
                             return@setAnalyzer
                         }
-                        val image = InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees)
-                        scanner.process(image)
-                            .addOnSuccessListener { barcodes ->
+                        try {
+                            val results = reader.read(proxy)
+                            results.firstOrNull()?.text?.let { value ->
                                 if (!fired) {
-                                    barcodes.firstNotNullOfOrNull { it.rawValue }?.let { value ->
-                                        fired = true
-                                        onScanned(value)
-                                    }
+                                    fired = true
+                                    onScanned(value)
                                 }
                             }
-                            .addOnCompleteListener { proxy.close() }
+                        } catch (_: Exception) {
+                        } finally {
+                            proxy.close()
+                        }
                     }
                 }
             try {

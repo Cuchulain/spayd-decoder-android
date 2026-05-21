@@ -1,21 +1,19 @@
 package cz.jancejka.spayddecoder
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.jancejka.spayddecoder.data.ParsedSpayd
 import cz.jancejka.spayddecoder.data.SpaydParser
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.withContext
+import zxingcpp.BarcodeReader
 
 sealed interface SpaydUiState {
     data object Idle : SpaydUiState
@@ -27,6 +25,16 @@ class SpaydViewModel : ViewModel() {
 
     private val _state = MutableStateFlow<SpaydUiState>(SpaydUiState.Idle)
     val state: StateFlow<SpaydUiState> = _state.asStateFlow()
+
+    private val reader = BarcodeReader(
+        BarcodeReader.Options(
+            formats = setOf(BarcodeReader.Format.QR_CODE),
+            tryHarder = true,
+            tryRotate = true,
+            tryInvert = true,
+            tryDownscale = true,
+        )
+    )
 
     fun reset() {
         _state.value = SpaydUiState.Idle
@@ -43,9 +51,12 @@ class SpaydViewModel : ViewModel() {
     fun handleImage(context: Context, uri: Uri) {
         viewModelScope.launch {
             try {
-                val image = InputImage.fromFilePath(context, uri)
-                val barcode = scanForQr(image)
-                val raw = barcode?.rawValue
+                val raw = withContext(Dispatchers.IO) {
+                    val bitmap = context.contentResolver.openInputStream(uri)?.use {
+                        BitmapFactory.decodeStream(it)
+                    } ?: return@withContext null
+                    reader.read(bitmap).firstOrNull()?.text
+                }
                 if (raw.isNullOrBlank()) {
                     _state.value = SpaydUiState.Error("V obrázku se nepodařilo najít QR kód.")
                 } else {
@@ -70,13 +81,4 @@ class SpaydViewModel : ViewModel() {
             SpaydUiState.Error("Neznámá chyba: ${e.message}")
         }
     }
-
-    private suspend fun scanForQr(image: InputImage): Barcode? =
-        suspendCancellableCoroutine { cont ->
-            val scanner = BarcodeScanning.getClient()
-            scanner.process(image)
-                .addOnSuccessListener { list -> cont.resume(list.firstOrNull()) }
-                .addOnFailureListener { e -> cont.resumeWithException(e) }
-                .addOnCompleteListener { scanner.close() }
-        }
 }

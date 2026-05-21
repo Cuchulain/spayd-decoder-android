@@ -15,8 +15,8 @@ android {
         applicationId = "cz.jancejka.spayddecoder"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.1.0"
     }
 
     signingConfigs {
@@ -61,6 +61,15 @@ android {
             java.srcDirs("src/main/kotlin")
         }
     }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = true
+        }
+    }
 }
 
 dependencies {
@@ -82,5 +91,5 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
-    implementation(libs.mlkit.barcode.scanning)
+    implementation(libs.zxingcpp.android)
 }

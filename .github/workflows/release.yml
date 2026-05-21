@@ -1,4 +1,4 @@
-name: Build & Release APK
+name: Build & Release
 
 on:
   push:
@@ -41,14 +41,14 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
           echo "KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
 
-      - name: Build release APK
+      - name: Build release APKs and AAB
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew --no-daemon assembleRelease
+        run: ./gradlew --no-daemon assembleRelease bundleRelease
 
-      - name: Prepare artifact
+      - name: Prepare artifacts
         id: artifact
         run: |
           mkdir -p out
@@ -56,32 +56,53 @@ jobs:
           if [[ "$GITHUB_REF" != refs/tags/* ]]; then
             REF_NAME="dev-${GITHUB_SHA::7}"
           fi
-          APK_NAME="spayd-decoder-${REF_NAME}.apk"
-          cp app/build/outputs/apk/release/app-release.apk "out/${APK_NAME}"
-          echo "apk_path=out/${APK_NAME}" >> "$GITHUB_OUTPUT"
-          echo "apk_name=${APK_NAME}"   >> "$GITHUB_OUTPUT"
+
+          shopt -s nullglob
+          for apk in app/build/outputs/apk/release/*.apk; do
+            base=$(basename "$apk" .apk)
+            # app-arm64-v8a-release → arm64-v8a; app-universal-release → universal
+            variant=$(echo "$base" | sed -E 's/^app-//; s/-release$//')
+            cp "$apk" "out/spayd-decoder-${REF_NAME}-${variant}.apk"
+          done
+
+          for aab in app/build/outputs/bundle/release/*.aab; do
+            cp "$aab" "out/spayd-decoder-${REF_NAME}.aab"
+          done
+
+          ls -la out/
+          echo "release_dir=out" >> "$GITHUB_OUTPUT"
 
       - name: Cleanup keystore
         if: always()
         run: rm -f "$RUNNER_TEMP/release.jks"
 
-      - name: Upload APK as workflow artifact
+      - name: Upload artifacts to workflow
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.artifact.outputs.apk_name }}
-          path: ${{ steps.artifact.outputs.apk_path }}
+          name: spayd-decoder-release
+          path: ${{ steps.artifact.outputs.release_dir }}/*
           if-no-files-found: error
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.artifact.outputs.apk_path }}
+          files: ${{ steps.artifact.outputs.release_dir }}/*
           fail_on_unmatched_files: true
           generate_release_notes: true
           body: |
             ## SPAYD dekodér ${{ github.ref_name }}
 
-            Stáhni `${{ steps.artifact.outputs.apk_name }}` níže a nainstaluj na zařízení s Androidem 7.0+ (zapni "Instalace z neznámých zdrojů").
+            ### Pro většinu uživatelů
+            Stáhni `spayd-decoder-${{ github.ref_name }}-arm64-v8a.apk` (moderní telefony, 99 % případů).
+
+            Pokud si nejsi jistý, použij `spayd-decoder-${{ github.ref_name }}-universal.apk` (větší, funguje všude).
+
+            ### Další varianty
+            - `armeabi-v7a` — starší 32bit ARM zařízení
+            - `x86_64` — emulátory, ChromeOS
+            - `.aab` — pouze pro nahrání do Google Play Console (uživatelé neinstalují)
+
+            Pro instalaci povol "Instalace z neznámých zdrojů". Vyžaduje Android 7.0+.
 
             Podepsáno vlastním release klíčem (R8 minifikace zapnuta).
