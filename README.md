@@ -39,3 +39,8 @@ gradle wrapper --gradle-version 8.10
 - minSdk 24 (Android 7.0), targetSdk 35 (Android 15)
 - Kotlin 2.1, AGP 8.7, Compose BOM 2024.12
 - CameraX 1.4.1, ML Kit barcode-scanning 17.3
+
+## Autor
+
+**Jan Čejka** (alias *Merguian*) — <https://jancejka.cz>
+GitHub: [@Cuchulain](https://github.com/Cuchulain)
