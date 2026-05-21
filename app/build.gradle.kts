@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+val releaseKeystorePath: String? = System.getenv("KEYSTORE_PATH")
+val hasReleaseSigning = !releaseKeystorePath.isNullOrBlank()
+
 android {
     namespace = "cz.cuchulain.spayddecoder"
     compileSdk = 35
@@ -16,8 +19,22 @@ android {
         versionName = "1.0.0"
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(releaseKeystorePath!!)
+                storePassword = System.getenv("STORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
