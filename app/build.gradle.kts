@@ -15,8 +15,8 @@ android {
         applicationId = "cz.jancejka.spayddecoder"
         minSdk = 24
         targetSdk = 35
-        versionCode = 5
-        versionName = "1.1.1"
+        versionCode = 6
+        versionName = "1.1.2"
     }
 
     signingConfigs {
@@ -64,7 +64,7 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            isEnable = (project.findProperty("abiSplits") as? String)?.toBoolean() ?: true
             reset()
             include("armeabi-v7a", "arm64-v8a", "x86_64")
             isUniversalApk = true

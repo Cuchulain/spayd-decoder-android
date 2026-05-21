@@ -1,0 +1,2 @@
+* ABI splits lze vypnout, aby F-Droid build vyrobil jeden universal APK
+* Bez změn pro uživatele
