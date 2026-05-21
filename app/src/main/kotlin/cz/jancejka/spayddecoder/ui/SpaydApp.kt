@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder.ui
+package cz.jancejka.spayddecoder.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -27,8 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import cz.cuchulain.spayddecoder.SpaydUiState
-import cz.cuchulain.spayddecoder.SpaydViewModel
+import cz.jancejka.spayddecoder.SpaydUiState
+import cz.jancejka.spayddecoder.SpaydViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

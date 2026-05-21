@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder.ui
+package cz.jancejka.spayddecoder.ui
 
 import android.annotation.SuppressLint
 import androidx.camera.core.CameraSelector

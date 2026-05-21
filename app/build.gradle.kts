@@ -8,15 +8,15 @@ val releaseKeystorePath: String? = System.getenv("KEYSTORE_PATH")
 val hasReleaseSigning = !releaseKeystorePath.isNullOrBlank()
 
 android {
-    namespace = "cz.cuchulain.spayddecoder"
+    namespace = "cz.jancejka.spayddecoder"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "cz.cuchulain.spayddecoder"
+        applicationId = "cz.jancejka.spayddecoder"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
     }
 
     signingConfigs {

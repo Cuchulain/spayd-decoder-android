@@ -1,11 +1,11 @@
-package cz.cuchulain.spayddecoder
+package cz.jancejka.spayddecoder
 
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.cuchulain.spayddecoder.data.ParsedSpayd
-import cz.cuchulain.spayddecoder.data.SpaydParser
+import cz.jancejka.spayddecoder.data.ParsedSpayd
+import cz.jancejka.spayddecoder.data.SpaydParser
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage

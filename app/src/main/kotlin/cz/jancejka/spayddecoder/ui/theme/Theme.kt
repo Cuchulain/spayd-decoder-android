@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder.ui.theme
+package cz.jancejka.spayddecoder.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

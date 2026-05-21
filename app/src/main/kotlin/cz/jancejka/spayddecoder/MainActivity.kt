@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder
+package cz.jancejka.spayddecoder
 
 import android.content.Intent
 import android.net.Uri
@@ -8,8 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import cz.cuchulain.spayddecoder.ui.SpaydApp
-import cz.cuchulain.spayddecoder.ui.theme.SpaydDecoderTheme
+import cz.jancejka.spayddecoder.ui.SpaydApp
+import cz.jancejka.spayddecoder.ui.theme.SpaydDecoderTheme
 
 class MainActivity : ComponentActivity() {
 

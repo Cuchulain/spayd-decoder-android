@@ -1,6 +1,6 @@
 # SPAYD dekodér — Android
 
-Nativní Android aplikace (Kotlin + Jetpack Compose) pro dekódování českých platebních **SPAYD** QR kódů. Sourozenec [webové verze](../spayd-decoder).
+Nativní Android aplikace (Kotlin + Jetpack Compose) pro dekódování českých platebních **SPAYD** QR kódů. Sourozenec [webové verze](https://github.com/Cuchulain/spayd-decoder).
 
 ## Funkce
 

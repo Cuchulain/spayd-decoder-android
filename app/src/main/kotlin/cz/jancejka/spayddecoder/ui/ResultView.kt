@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder.ui
+package cz.jancejka.spayddecoder.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,8 +37,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import cz.cuchulain.spayddecoder.data.ParsedSpayd
-import cz.cuchulain.spayddecoder.data.SpaydField
+import cz.jancejka.spayddecoder.data.ParsedSpayd
+import cz.jancejka.spayddecoder.data.SpaydField
 import kotlinx.coroutines.launch
 
 @Composable

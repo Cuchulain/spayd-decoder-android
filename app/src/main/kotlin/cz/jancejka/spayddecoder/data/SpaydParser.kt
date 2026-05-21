@@ -1,4 +1,4 @@
-package cz.cuchulain.spayddecoder.data
+package cz.jancejka.spayddecoder.data
 
 import java.net.URLDecoder
 import java.text.NumberFormat
