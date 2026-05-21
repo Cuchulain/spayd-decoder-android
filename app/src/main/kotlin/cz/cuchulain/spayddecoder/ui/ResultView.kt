@@ -140,7 +140,7 @@ private fun FieldCard(field: SpaydField, onCopy: () -> Unit) {
 fun ErrorView(message: String, onReset: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, Arrangement.Center),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
